@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HM Camperbouw — Vakkundige camperombouw op maat</title>
+<meta name="description" content="HM Camperbouw bouwt jouw bus om tot camperbasis. Hefdaken, ramen, draaiplateaus en maatwerk. Stuur een foto en ontvang direct advies van Himen.">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="frames/frame_001.webp" fetchpriority="high">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --ink:        #0A0A0A;
+  --ink-2:      #141414;
+  --ink-3:      #1C1C1C;
+  --cream:      #F2EDE6;
+  --cream-dim:  rgba(242,237,230,0.72);
+  --cream-ghost:rgba(242,237,230,0.38);
+  --gold:       #E8241C;
+  --gold-dim:   rgba(232,36,28,0.38);
+  --rule:       rgba(242,237,230,0.10);
+  --rule-strong:rgba(242,237,230,0.18);
+  --red:        #E8241C;
+  --wa:         #25D366;
+  --wa-deep:    #1da851;
+
+  --f-display: 'DM Serif Display', Georgia, serif;
+  --f-body:    'Inter', system-ui, sans-serif;
+  --f-mono:    'DM Mono', 'Courier New', monospace;
+
+  --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+ul { list-style: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ============================================================
+   SHARED UTILITIES
+   ============================================================ */
+.label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+@media (max-width: 768px) { .wrap { padding: 0 20px; } }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 22px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s ease, padding 0.4s ease, border-bottom 0.4s ease;
+}
+nav.scrolled {
+  background: rgba(10,10,10,0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--rule);
+}
+@media (max-width: 768px) {
+  nav, nav.scrolled { padding: 16px 20px; }
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+/* Logo img in nav */
+.nav-logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  /* Logo heeft witte achtergrond — mix-blend-mode zorgt dat die transparant oogt op donkere achtergrond */
+  mix-blend-mode: lighten;
+  filter: brightness(1.08);
+}
+@media (max-width: 480px) { .nav-logo-img { height: 26px; } }
+
+/* ============================================================
+   FULLSCREEN LOAD SCREEN
+   ============================================================ */
+#load-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  pointer-events: all;
+  transition: opacity 0.7s var(--ease-out);
+}
+#load-screen.dismissed {
+  opacity: 0;
+  pointer-events: none;
+}
+.ls-logo {
+  height: 40px;
+  width: auto;
+  mix-blend-mode: lighten;
+  filter: brightness(1.1);
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: lsFadeIn 0.6s 0.2s var(--ease-out) forwards;
+}
+.ls-title {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 3vw, 34px);
+  color: var(--cream);
+  text-align: center;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: lsFadeIn 0.6s 0.4s var(--ease-out) forwards;
+}
+.ls-title em { font-style: italic; color: var(--gold); }
+.ls-sub {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream-ghost);
+  text-align: center;
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: lsFadeIn 0.5s 0.6s var(--ease-out) forwards;
+}
+.ls-bar-wrap {
+  width: 200px;
+  height: 1px;
+  background: rgba(242,237,230,0.12);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: lsFadeIn 0.5s 0.7s var(--ease-out) forwards;
+}
+.ls-bar {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+  transition: width 0.2s ease-out;
+}
+.ls-pct {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  color: var(--gold);
+  opacity: 0;
+  animation: lsFadeIn 0.5s 0.8s var(--ease-out) forwards;
+}
+.ls-hint {
+  position: absolute;
+  bottom: 36px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(242,237,230,0.22);
+  text-align: center;
+  opacity: 0;
+  animation: lsFadeIn 0.5s 1s var(--ease-out) forwards;
+}
+@keyframes lsFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--wa);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 0.2s;
+  border: none;
+}
+.nav-cta:hover { background: var(--wa-deep); }
+.nav-cta svg { width: 15px; height: 15px; flex-shrink: 0; fill: #fff; }
+
+/* ============================================================
+   CANVAS ANIMATION SECTION
+   ============================================================ */
+#animation-section {
+  position: relative;
+  height: 550vh; /* controls scroll length = ~5-6s of scrolling at normal speed */
+}
+
+#canvas-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#anim-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Poster image: shown before canvas is ready */
+#anim-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  transition: opacity 0.5s ease;
+}
+#anim-poster.hidden { opacity: 0; pointer-events: none; }
+
+/* Loader */
+#anim-loader {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.6s ease;
+}
+#anim-loader.hidden { opacity: 0; pointer-events: none; }
+.loader-track {
+  width: 120px;
+  height: 1px;
+  background: rgba(242,237,230,0.15);
+  position: relative;
+  overflow: hidden;
+}
+.loader-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+  transition: width 0.15s ease-out;
+}
+.loader-text {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-ghost);
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.scroll-hint.visible { opacity: 1; }
+.scroll-hint span {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream-ghost);
+}
+.scroll-hint-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* Hero overlay text — fades out as animation progresses */
+#hero-text {
+  position: absolute;
+  bottom: 14%;
+  left: 40px;
+  z-index: 10;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+@media (max-width: 768px) { #hero-text { left: 20px; bottom: 100px; } }
+#hero-text.fading {
+  opacity: 0;
+  transform: translateY(16px);
+}
+#hero-text .label { margin-bottom: 14px; display: block; }
+#hero-text h1 {
+  font-family: var(--f-display);
+  font-size: clamp(42px, 6.5vw, 96px);
+  line-height: 1.0;
+  color: #fff;
+  text-shadow: 0 2px 40px rgba(0,0,0,0.5);
+  max-width: 760px;
+}
+#hero-text h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* Gradient overlays over canvas */
+.canvas-gradient-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+.canvas-gradient-left {
+  position: absolute;
+  top: 0; left: 0;
+  width: 50%; height: 100%;
+  background: linear-gradient(to right, rgba(10,10,10,0.35) 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ============================================================
+   TRANSITION STRIP — invisible seam between animation & content
+   ============================================================ */
+.transition-strip {
+  height: 1px;
+  background: var(--ink);
+  margin-top: -1px;
+}
+
+/* ============================================================
+   SECTION SHARED
+   ============================================================ */
+section {
+  padding: 100px 0;
+}
+@media (max-width: 768px) { section { padding: 64px 0; } }
+
+.section-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 40px;
+  align-items: start;
+  margin-bottom: 60px;
+}
+@media (max-width: 768px) {
+  .section-header {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+}
+.section-index {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  padding-top: 8px;
+  white-space: nowrap;
+}
+.section-title {
+  font-family: var(--f-display);
+  font-size: clamp(36px, 4.5vw, 64px);
+  line-height: 1.05;
+  color: var(--cream);
+}
+.section-title em { font-style: italic; color: var(--gold); }
+
+hr.rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 60px;
+}
+
+/* ============================================================
+   TRUST STRIP
+   ============================================================ */
+#trust {
+  padding: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--ink-2);
+}
+.trust-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 900px) { .trust-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .trust-row { grid-template-columns: 1fr 1fr; } }
+
+.trust-item {
+  padding: 36px 32px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.trust-item:last-child { border-right: none; }
+@media (max-width: 900px) {
+  .trust-item:nth-child(2) { border-right: none; }
+  .trust-item:nth-child(1),
+  .trust-item:nth-child(2) { border-bottom: 1px solid var(--rule); }
+}
+.trust-item h3 {
+  font-family: var(--f-display);
+  font-size: 19px;
+  color: var(--cream);
+  font-weight: 400;
+}
+.trust-item p {
+  font-size: 13.5px;
+  color: var(--cream-ghost);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   WERKZAAMHEDEN
+   ============================================================ */
+#werkzaamheden { background: var(--ink); }
+
+.werk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+@media (max-width: 640px) { .werk-grid { grid-template-columns: 1fr; } }
+
+.werk-card {
+  background: var(--ink);
+  padding: 40px 36px;
+  transition: background 0.2s ease;
+}
+.werk-card:hover { background: var(--ink-2); }
+.werk-num {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+  display: block;
+}
+.werk-card h3 {
+  font-family: var(--f-display);
+  font-size: 26px;
+  color: var(--cream);
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+.werk-card p {
+  font-size: 14px;
+  color: var(--cream-dim);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+.werk-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.werk-tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--cream-ghost);
+  border: 1px solid var(--rule-strong);
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+.werk-cta-row {
+  margin-top: 1px;
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-top: none;
+  padding: 28px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.werk-cta-row p {
+  font-size: 14px;
+  color: var(--cream-dim);
+}
+.werk-cta-row strong { color: var(--cream); }
+
+/* ============================================================
+   ZO WERKT HET
+   ============================================================ */
+#werkwijze { background: var(--ink-2); }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+
+.step {
+  padding: 40px 32px;
+  border-right: 1px solid var(--rule);
+}
+.step:last-child { border-right: none; }
+@media (max-width: 900px) {
+  .step:nth-child(2) { border-right: none; }
+  .step:nth-child(1),
+  .step:nth-child(2) { border-bottom: 1px solid var(--rule); }
+}
+.step-num {
+  font-family: var(--f-mono);
+  font-size: 32px;
+  font-weight: 400;
+  color: rgba(232,36,28,0.18);
+  line-height: 1;
+  margin-bottom: 16px;
+  display: block;
+}
+.step h3 {
+  font-family: var(--f-display);
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+.step p {
+  font-size: 13.5px;
+  color: var(--cream-ghost);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   BUSMODELLEN
+   ============================================================ */
+#modellen { background: var(--ink); }
+
+.models-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 0;
+}
+@media (max-width: 760px) { .models-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.model-pill {
+  background: var(--ink);
+  padding: 22px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--f-display);
+  font-size: 16px;
+  color: var(--cream-dim);
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  border: none;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.model-pill:hover { background: var(--ink-2); color: var(--cream); }
+.model-pill.other {
+  color: var(--cream-ghost);
+  font-family: var(--f-body);
+  font-size: 14px;
+}
+
+.models-note {
+  margin-top: 1px;
+  padding: 18px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.models-note p { font-size: 14px; color: var(--cream-ghost); }
+.models-note a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-color: var(--gold-dim);
+  font-weight: 500;
+}
+
+/* ============================================================
+   OVER HIMEN
+   ============================================================ */
+#over { background: var(--ink-2); }
+
+.over-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 80px;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .over-grid { grid-template-columns: 1fr; gap: 40px; }
+  .over-photo { order: -1; }
+}
+
+.over-photo {
+  aspect-ratio: 4 / 5;
+  border-radius: 2px;
+  background: var(--ink-3);
+  border: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--cream-ghost);
+  text-align: center;
+  padding: 24px;
+  overflow: hidden;
+}
+.over-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+.over-text .label { margin-bottom: 16px; display: block; }
+.over-text h2 {
+  font-family: var(--f-display);
+  font-size: clamp(32px, 3.5vw, 52px);
+  color: var(--cream);
+  margin-bottom: 24px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.over-text h2 em { font-style: italic; color: var(--gold); }
+.over-text p {
+  font-size: 15px;
+  color: var(--cream-dim);
+  line-height: 1.8;
+  margin-bottom: 18px;
+  max-width: 520px;
+}
+.over-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0 32px;
+}
+.over-badge {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--cream);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 14px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.over-badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   CONTACT / OFFERTE
+   ============================================================ */
+#offerte { background: var(--ink); }
+
+.off-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 64px;
+  align-items: start;
+}
+@media (max-width: 900px) { .off-grid { grid-template-columns: 1fr; gap: 36px; } }
+
+.off-left .label { margin-bottom: 16px; display: block; }
+.off-left h2 {
+  font-family: var(--f-display);
+  font-size: clamp(32px, 3.5vw, 52px);
+  color: var(--cream);
+  margin-bottom: 20px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.off-left p {
+  font-size: 15px;
+  color: var(--cream-dim);
+  line-height: 1.8;
+  margin-bottom: 28px;
+  max-width: 480px;
+}
+
+/* WhatsApp primary block */
+.wa-primary {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.wa-primary h4 {
+  font-family: var(--f-display);
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+.wa-primary p {
+  font-size: 13px;
+  color: var(--cream-ghost);
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+.wa-checklist {
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.wa-check {
+  font-size: 13px;
+  color: var(--cream-dim);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+.wa-check::before { content: '✓'; color: var(--wa); font-weight: 600; flex-shrink: 0; }
+
+/* Form */
+.form-box {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 32px;
+}
+.form-box h3 {
+  font-family: var(--f-display);
+  font-size: 22px;
+  color: var(--cream);
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.form-box > p {
+  font-size: 13px;
+  color: var(--cream-ghost);
+  margin-bottom: 24px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.field label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-ghost);
+}
+.field input,
+.field select,
+.field textarea {
+  background: rgba(242,237,230,0.04);
+  border: 1px solid rgba(242,237,230,0.12);
+  border-radius: 2px;
+  padding: 12px 14px;
+  font-family: var(--f-body);
+  font-size: 14px;
+  color: var(--cream);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.field input::placeholder,
+.field textarea::placeholder { color: rgba(242,237,230,0.22); }
+.field input:focus,
+.field select:focus,
+.field textarea:focus { border-color: var(--gold); }
+.field select option { background: #141414; }
+.field textarea { resize: vertical; min-height: 80px; }
+
+/* Chips */
+.chip-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-ghost);
+  margin-bottom: 8px;
+  display: block;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.chip {
+  background: transparent;
+  border: 1px solid rgba(242,237,230,0.14);
+  color: rgba(242,237,230,0.5);
+  font-size: 12px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: var(--f-body);
+}
+.chip:hover { border-color: var(--gold-dim); color: var(--cream); }
+.chip.sel { background: var(--red); border-color: var(--red); color: #fff; }
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  color: rgba(242,237,230,0.4);
+  line-height: 1.5;
+  margin: 4px 0 20px;
+}
+.consent input { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; accent-color: var(--red); }
+.form-note {
+  font-size: 11px;
+  color: rgba(242,237,230,0.28);
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--wa);
+  color: #fff;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.12s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-wa:hover { background: var(--wa-deep); }
+.btn-wa:active { transform: translateY(1px); }
+.btn-wa svg { width: 16px; height: 16px; fill: #fff; flex-shrink: 0; }
+.btn-wa.full { width: 100%; }
+.btn-wa.large { padding: 18px 32px; font-size: 14px; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid var(--rule-strong);
+  padding: 14px 24px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+.btn-ghost:hover { border-color: var(--gold-dim); background: rgba(232,36,28,0.04); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--ink-2);
+  border-top: 1px solid var(--rule);
+  padding: 48px 0 28px;
+}
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 24px;
+}
+.footer-brand { display: flex; align-items: center; gap: 12px; }
+.footer-links {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+}
+.footer-links a { color: var(--cream-ghost); transition: color 0.2s; }
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: rgba(242,237,230,0.28);
+  font-family: var(--f-mono);
+}
+
+/* ============================================================
+   MOBILE STICKY CTA
+   ============================================================ */
+.mobile-cta {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 10px 16px;
+  background: rgba(10,10,10,0.95);
+  border-top: 1px solid var(--rule);
+  backdrop-filter: blur(12px);
+}
+@media (max-width: 768px) {
+  .mobile-cta { display: block; }
+  body { padding-bottom: 64px; }
+}
+.mobile-cta .btn-wa { width: 100%; padding: 14px; }
+
+/* ============================================================
+   FLOATING WA BUTTON (desktop)
+   ============================================================ */
+.wa-float {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 100;
+  width: 52px; height: 52px;
+  background: var(--wa);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+  transition: transform 0.2s, background 0.2s;
+}
+.wa-float:hover { transform: scale(1.08); background: var(--wa-deep); }
+.wa-float svg { width: 24px; height: 24px; fill: #fff; }
+@media (max-width: 768px) { .wa-float { display: none; } }
+
+/* ============================================================
+   MOBILE FALLBACK FOR ANIMATION
+   ============================================================ */
+.mobile-hero {
+  display: none;
+}
+@media (max-width: 768px) {
+  #animation-section { display: none; }
+  .mobile-hero {
+    display: block;
+    position: relative;
+    height: 100svh;
+    min-height: 600px;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .mobile-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .mobile-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.2) 60%, transparent 100%);
+  }
+  .mobile-hero-content {
+    position: absolute;
+    bottom: 48px;
+    left: 20px;
+    right: 20px;
+  }
+  .mobile-hero-content .label { margin-bottom: 12px; display: block; }
+  .mobile-hero-content h1 {
+    font-family: var(--f-display);
+    font-size: 42px;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  .mobile-hero-content h1 em { font-style: italic; color: var(--gold); }
+}
+/* ============================================================
+   HEFDAKEN SECTIE
+   ============================================================ */
+#hefdaken { background: var(--ink); padding-bottom: 0; }
+
+.hfd-hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/7;
+  overflow: hidden;
+  margin-top: 48px;
+}
+@media (max-width: 768px) { .hfd-hero { aspect-ratio: 16/10; } }
+.hfd-hero img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.hfd-hero-caption {
+  position: absolute;
+  bottom: 24px; left: 40px;
+  background: rgba(10,10,10,0.72);
+  backdrop-filter: blur(8px);
+  padding: 12px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--red);
+}
+.hfd-hero-caption .label { margin-bottom: 4px; display: block; }
+.hfd-hero-caption p { font-size: 13px; color: var(--cream-dim); margin: 0; }
+@media (max-width: 768px) { .hfd-hero-caption { left: 20px; bottom: 16px; } }
+
+.hfd-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  padding: 72px 0 64px;
+  align-items: start;
+}
+@media (max-width: 900px) { .hfd-intro { grid-template-columns: 1fr; gap: 40px; } }
+.hfd-intro-text h3 {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 3vw, 44px);
+  color: var(--cream);
+  margin-bottom: 20px;
+  line-height: 1.08;
+}
+.hfd-intro-text p {
+  font-size: 15px;
+  color: var(--cream-dim);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+.hfd-intro-text p strong { color: var(--cream); }
+
+.hfd-types {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hfd-type {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--ink-2);
+  transition: background 0.2s;
+}
+.hfd-type:last-child { border-bottom: none; }
+.hfd-type:hover { background: var(--ink-3); }
+.hfd-type .label { margin-bottom: 8px; display: block; }
+.hfd-type h4 {
+  font-family: var(--f-display);
+  font-size: 18px;
+  color: var(--cream);
+  margin-bottom: 6px;
+}
+.hfd-type p { font-size: 13px; color: var(--cream-dim); line-height: 1.6; margin: 0; }
+
+/* Before / During / After */
+.hfd-bda {
+  padding: 0 0 72px;
+  border-top: 1px solid var(--rule);
+  padding-top: 56px;
+}
+.hfd-bda-header { margin-bottom: 32px; }
+.hfd-bda-header .label { margin-bottom: 10px; display: block; }
+.hfd-bda-header h3 {
+  font-family: var(--f-display);
+  font-size: clamp(24px, 2.5vw, 36px);
+  color: var(--cream);
+  font-weight: 400;
+}
+.hfd-bda-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+@media (max-width: 768px) { .hfd-bda-grid { grid-template-columns: 1fr; } }
+.hfd-bda-item {
+  background: var(--ink);
+  position: relative;
+}
+.hfd-bda-img {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+.hfd-bda-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+.hfd-bda-item:hover .hfd-bda-img img { transform: scale(1.03); }
+.hfd-bda-label {
+  display: inline-block;
+  margin: 14px 16px 8px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+.hfd-bda-label.before { background: rgba(242,237,230,0.08); color: var(--cream-dim); }
+.hfd-bda-label.during { background: rgba(232,36,28,0.12); color: var(--red); }
+.hfd-bda-label.after  { background: rgba(37,211,102,0.12); color: #25D366; }
+.hfd-bda-item p {
+  font-size: 13px;
+  color: var(--cream-ghost);
+  line-height: 1.55;
+  padding: 0 16px 18px;
+  margin: 0;
+}
+
+/* Galerij */
+.hfd-gallery {
+  padding: 0 0 72px;
+  border-top: 1px solid var(--rule);
+  padding-top: 56px;
+}
+.hfd-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+@media (max-width: 768px) { .hfd-gallery-grid { grid-template-columns: 1fr; } }
+.hfd-gallery-item { position: relative; background: var(--ink); }
+.hfd-gallery-item img {
+  width: 100%;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+.hfd-gallery-item:hover img { transform: scale(1.03); }
+.hfd-gallery-caption {
+  padding: 14px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hfd-gallery-caption strong {
+  font-size: 13px;
+  color: var(--cream);
+  font-family: var(--f-display);
+}
+.hfd-gallery-caption span { font-size: 12px; color: var(--cream-ghost); }
+
+/* CTA-rij hefdaken */
+.hfd-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 24px 28px;
+  margin-bottom: 80px;
+}
+.hfd-cta p { font-size: 14px; color: var(--cream-dim); max-width: 480px; margin: 0; }
+
+/* Overige diensten — compact */
+#werkzaamheden { background: var(--ink-2); }
+.diensten-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1px;
+}
+@media (max-width: 768px) { .diensten-row { grid-template-columns: 1fr; } }
+.dienst-item {
+  background: var(--ink-2);
+  padding: 28px 28px;
+  transition: background 0.2s;
+}
+.dienst-item:hover { background: var(--ink-3); }
+.dienst-item h3 {
+  font-family: var(--f-display);
+  font-size: 22px;
+  color: var(--cream);
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.dienst-item p { font-size: 13.5px; color: var(--cream-dim); line-height: 1.6; margin: 0; }
+
+</style>
+</head>
+<body>
+
+<!-- FULLSCREEN LOAD SCREEN -->
+<div id="load-screen" role="status" aria-live="polite" aria-label="Website wordt geladen">
+  <img src="logo-hm-camperbouw.webp" alt="HM Camperbouw" class="ls-logo" width="160" height="104">
+  <h2 class="ls-title">Jouw bus. <em>Vakkundig</em> omgebouwd.</h2>
+  <p class="ls-sub">Animatie wordt geladen&hellip;</p>
+  <div class="ls-bar-wrap"><div class="ls-bar" id="ls-bar"></div></div>
+  <span class="ls-pct" id="ls-pct">0%</span>
+  <p class="ls-hint">Even geduld — we laden de animatie voor de beste ervaring</p>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-logo">
+    <img src="logo-hm-camperbouw.webp" alt="HM Camperbouw" class="nav-logo-img" width="120" height="78" decoding="async">
+  </div>
+  <a class="nav-cta" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20stuur%20een%20foto%20van%20mijn%20bus." target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+    WhatsApp
+  </a>
+</nav>
+
+<!-- MOBILE HERO FALLBACK -->
+<div class="mobile-hero">
+  <img src="frames/frame_099.webp" alt="HM Camperbouw — vakkundige camperombouw" loading="eager" decoding="async">
+  <div class="mobile-hero-overlay"></div>
+  <div class="mobile-hero-content">
+    <span class="label">HM Camperbouw</span>
+    <h1>Jouw bus. <em>Vakkundig</em> omgebouwd.</h1>
+    <a class="btn-wa large" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20stuur%20een%20foto%20van%20mijn%20bus." target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+      Stuur je busfoto
+    </a>
+  </div>
+</div>
+
+<!-- CANVAS ANIMATION (desktop only) -->
+<section id="animation-section" aria-label="Animatie van HM Camperbouw camperombouw">
+  <div id="canvas-sticky">
+
+    <!-- Gradient overlays -->
+    <div class="canvas-gradient-left"></div>
+    <div class="canvas-gradient-bottom"></div>
+
+    <!-- Poster: shown immediately, before JS runs -->
+    <img id="anim-poster" src="frames/frame_001.webp" alt="" aria-hidden="true" decoding="async">
+
+    <!-- Canvas: JS draws frames here -->
+    <canvas id="anim-canvas" aria-hidden="true"></canvas>
+
+    <!-- Hero text overlay -->
+    <div id="hero-text">
+      <span class="label">HM Camperbouw — Vakkundige camperombouw</span>
+      <h1>Jouw bus.<br><em>Vakkundig</em><br>omgebouwd.</h1>
+    </div>
+
+    <!-- Loader bar -->
+    <div id="anim-loader">
+      <div class="loader-track"><div class="loader-fill" id="loader-fill"></div></div>
+      <span class="loader-text">Laden&hellip;</span>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint" id="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-hint-line"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- INVISIBLE TRANSITION STRIP -->
+<div class="transition-strip"></div>
+
+<!-- ============================================================
+     TRUST STRIP
+     ============================================================ -->
+<section id="trust">
+  <div class="trust-row">
+    <div class="trust-item reveal">
+      <span class="label">RDW-proof</span>
+      <h3>Keurig gemonteerd</h3>
+      <p>Werkzaamheden met aandacht voor montagekwaliteit en keuring.</p>
+    </div>
+    <div class="trust-item reveal" style="transition-delay:.08s">
+      <span class="label">Eigen werkplaats</span>
+      <h3>Geen losse klus</h3>
+      <p>Professionele werkomgeving, geen improvisatie op straat.</p>
+    </div>
+    <div class="trust-item reveal" style="transition-delay:.16s">
+      <span class="label">Direct contact</span>
+      <h3>De vakman zelf</h3>
+      <p>Je spreekt rechtstreeks met Himen — geen tussenpersonen.</p>
+    </div>
+    <div class="trust-item reveal" style="transition-delay:.24s">
+      <span class="label">Maatwerk</span>
+      <h3>Jouw wensen centraal</h3>
+      <p>Staat jouw idee er niet bij? Vrijwel altijd bespreekbaar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HEFDAKEN — SPECIALITEIT
+     ============================================================ -->
+<section id="hefdaken">
+  <div class="wrap">
+    <div class="section-header reveal">
+      <span class="section-index label">Specialiteit</span>
+      <h2 class="section-title">Hefdaken —<br>Himen's <em>vak</em></h2>
+    </div>
+    <hr class="rule">
+  </div>
+
+  <!-- Fullbreedte hero-foto -->
+  <div class="hfd-hero reveal">
+    <img src="photos/hero.webp" alt="Volkswagen Transporter met gemonteerd hefdak, open zijdeur en houten interieur — project van HM Camperbouw" loading="lazy" decoding="async">
+    <div class="hfd-hero-caption">
+      <span class="label">Eigen project &mdash; VW T6 Amigo</span>
+      <p>Hefdak, B-stijl verwijderd, houten interieur op maat</p>
+    </div>
+  </div>
+
+  <!-- Wat is een hefdak + types -->
+  <div class="wrap">
+    <div class="hfd-intro reveal">
+      <div class="hfd-intro-text">
+        <h3>Meer ruimte.<br>Zelfde bus.</h3>
+        <p>Een hefdak geeft je bus een volwaardige slaapverdieping zonder dat je een grotere bus nodig hebt. Overdag rijdt je gewoon; 's avonds hef je het dak en sta je rechtop. Himen monteert hefdaken van merken als <strong>Reimo</strong> en <strong>SCA</strong>, maar ook maatwerk-constructies — afhankelijk van jouw bus en wensen.</p>
+        <p>Elk project is anders. Welk tentdoek, welke kleur, met of zonder venster, met of zonder B-stijlverwijdering — dat bespreek je direct met Himen.</p>
+      </div>
+      <div class="hfd-types">
+        <div class="hfd-type">
+          <span class="label">Type 01</span>
+          <h4>Standaard hefdak</h4>
+          <p>Klapt omhoog en biedt een slaapplaats voor twee. Compact en bewezen.</p>
+        </div>
+        <div class="hfd-type">
+          <span class="label">Type 02</span>
+          <h4>Hefbed</h4>
+          <p>Bed dat omhoogklapt in de bus zelf. Geen tentdoek, maximaal afdak-gevoel.</p>
+        </div>
+        <div class="hfd-type">
+          <span class="label">Type 03</span>
+          <h4>Op maat</h4>
+          <p>Specifieke kleur tentdoek, afwijkend formaat of speciale afwerking? In overleg.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Before / During / After van een echt project -->
+    <div class="hfd-bda reveal">
+      <div class="hfd-bda-header">
+        <span class="label">Uit de werkplaats</span>
+        <h3>Zo gaat een hefdak-montage</h3>
+      </div>
+      <div class="hfd-bda-grid">
+        <div class="hfd-bda-item">
+          <div class="hfd-bda-img">
+            <img src="photos/before.webp" alt="VW Transporter zonder hefdak, lege laadruimte — startpunt van het project" loading="lazy" decoding="async">
+          </div>
+          <span class="hfd-bda-label before">Voor</span>
+          <p>Standaard bus, lege laadruimte. Exact zoals hij binnenkomt.</p>
+        </div>
+        <div class="hfd-bda-item">
+          <div class="hfd-bda-img">
+            <img src="photos/during.webp" alt="VW Transporter met dak in bewerking in de werkplaats van HM Camperbouw" loading="lazy" decoding="async">
+          </div>
+          <span class="hfd-bda-label during">Tijdens</span>
+          <p>Het dak wordt professioneel bewerkt in de eigen werkplaats.</p>
+        </div>
+        <div class="hfd-bda-item">
+          <div class="hfd-bda-img">
+            <img src="photos/after.webp" alt="VW Transporter met gemonteerd hefdak, klaar voor oplevering" loading="lazy" decoding="async">
+          </div>
+          <span class="hfd-bda-label after">Na</span>
+          <p>Hefdak gemonteerd, getest en klaar voor oplevering.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projectgalerij -->
+    <div class="hfd-gallery reveal">
+      <span class="label" style="margin-bottom:24px;display:block">Meer projecten</span>
+      <div class="hfd-gallery-grid">
+        <div class="hfd-gallery-item">
+          <img src="photos/gallery1.webp" alt="Gele en blauwe VW Transporter met hefdak — twee projecten van HM Camperbouw" loading="lazy" decoding="async">
+          <div class="hfd-gallery-caption">
+            <strong>VW T6 — meerdere uitvoeringen</strong>
+            <span>Hefdak, diverse tentdoek-kleuren</span>
+          </div>
+        </div>
+        <div class="hfd-gallery-item">
+          <img src="photos/gallery2.webp" alt="Lichtblauwe VW Transporter met turquoise hefdak in werkplaats" loading="lazy" decoding="async">
+          <div class="hfd-gallery-caption">
+            <strong>VW T6 — turquoise tentdoek</strong>
+            <span>Kleur tentdoek volledig op wens</span>
+          </div>
+        </div>
+        <div class="hfd-gallery-item">
+          <img src="photos/gallery3.webp" alt="Zwarte VW Transporter Amigo met open hefdak in de avond" loading="lazy" decoding="async">
+          <div class="hfd-gallery-caption">
+            <strong>VW T6 Amigo — zwart</strong>
+            <span>Hefdak + B-stijl verwijderd</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA direct na de galerie -->
+    <div class="hfd-cta reveal">
+      <div>
+        <p>Meer foto's van projecten volgen binnenkort. Heb je vragen over een specifiek type hefdak?</p>
+      </div>
+      <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20vraag%20over%20een%20hefdak%20voor%20mijn%20bus." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+        Vraag over hefdakken
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     OVER HIMEN — direct na zijn specialiteit
+     ============================================================ -->
+<section id="over">
+  <div class="wrap">
+    <div class="over-grid">
+      <div class="over-text reveal">
+        <span class="label">De vakman</span>
+        <h2>HM Camperbouw<br>is <em>Himen</em></h2>
+        <p>HM Camperbouw is de werkplaats van Himen. Geen groot bedrijf, geen tussenpersonen — gewoon directe communicatie met de persoon die het werk ook echt uitvoert.</p>
+        <p>Je stuurt een foto, vertelt wat je wilt en krijgt eerlijk advies over wat er mogelijk is en wat het kost. Zo simpel is het.</p>
+        <div class="over-badges">
+          <span class="over-badge">Eigen werkplaats</span>
+          <span class="over-badge">Persoonlijk advies</span>
+          <span class="over-badge">Direct contact</span>
+          <span class="over-badge">RDW-proof</span>
+        </div>
+        <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20vraag%20over%20mijn%20bus." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+          Direct WhatsAppen
+        </a>
+      </div>
+      <div class="over-photo reveal" style="transition-delay:.12s">
+        <span style="line-height:1.7">Foto van Himen<br>of de werkplaats<br>— volgt</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     OVERIGE DIENSTEN — compact
+     ============================================================ -->
+<section id="werkzaamheden">
+  <div class="wrap">
+    <div class="section-header reveal">
+      <span class="section-index label">Meer mogelijk</span>
+      <h2 class="section-title">Ook uit<br>te <em>voeren</em></h2>
+    </div>
+    <hr class="rule">
+    <div class="diensten-row reveal">
+      <div class="dienst-item">
+        <h3>Ramen</h3>
+        <p>Uitzagen, privacyglas, schuiframen en horren.</p>
+      </div>
+      <div class="dienst-item">
+        <h3>Draaiplateaus</h3>
+        <p>Bestuurder en passagier, inclusief handrem verlagen.</p>
+      </div>
+      <div class="dienst-item">
+        <h3>Afwerking</h3>
+        <p>Vilt, gordijnen, luifel, zonnepanelen en maatwerk.</p>
+      </div>
+    </div>
+    <div class="werk-cta-row reveal">
+      <p><strong>Combinatie mogelijk.</strong> Meeste klanten kiezen hefdak + ramen + draaiplateau in één opdracht.</p>
+      <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20vraag%20over%20mijn%20bus." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+        Stel je vraag
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ZO WERKT HET
+     ============================================================ -->
+<section id="werkwijze">
+  <div class="wrap">
+    <div class="section-header reveal">
+      <span class="section-index label">Werkwijze</span>
+      <h2 class="section-title">Van foto<br>tot <em>oplevering</em></h2>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Stuur een foto</h3>
+        <p>App een foto van je bus via WhatsApp. Meer hoef je niet te doen om te beginnen.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Vertel je wensen</h3>
+        <p>Wat wil je aanpassen? Himen denkt direct mee over de mogelijkheden.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Eerlijk advies</h3>
+        <p>Je hoort wat er kan, wat het kost en hoe lang het duurt. Zonder verkooppraatje.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <h3>Ombouw in onze werkplaats</h3>
+        <p>Alles wordt vakkundig uitgevoerd in de eigen werkplaats van HM Camperbouw.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT / OFFERTE
+     ============================================================ -->
+<section id="offerte">
+  <div class="wrap">
+    <div class="section-header reveal">
+      <span class="section-index label">Contact</span>
+      <h2 class="section-title">Begin met<br>één <em>foto</em></h2>
+    </div>
+    <div class="off-grid">
+      <div class="off-left reveal">
+        <p>Stuur een foto van je bus mee en geef aan welke aanpassing je zoekt. Dan kunnen we snel inschatten wat er mogelijk is.</p>
+        <div class="wa-primary">
+          <h4>WhatsApp is het snelst</h4>
+          <p>Direct contact met Himen. Stuur een foto mee voor het snelste antwoord.</p>
+          <a class="btn-wa full" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20stuur%20een%20foto%20van%20mijn%20bus." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+            Stuur je busfoto via WhatsApp
+          </a>
+          <div class="wa-checklist">
+            <span class="wa-check">Direct contact met Himen</span>
+            <span class="wa-check">Praktisch advies zonder verplichtingen</span>
+            <span class="wa-check">Duidelijke prijsindicatie</span>
+            <span class="wa-check">Foto meesturen = sneller antwoord</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-box reveal" style="transition-delay:.1s">
+        <h3>Offerte aanvragen</h3>
+        <p>Opent WhatsApp met jouw gegevens vooringevuld.</p>
+        <div class="form-row">
+          <div class="field">
+            <label>Voornaam</label>
+            <input type="text" id="f-naam" placeholder="Jan" autocomplete="given-name">
+          </div>
+          <div class="field">
+            <label>Telefoon</label>
+            <input type="tel" id="f-tel" placeholder="06-12345678" autocomplete="tel">
+          </div>
+        </div>
+        <div class="field">
+          <label>Werkzaamheden</label>
+          <select id="f-dienst">
+            <option value="">Selecteer...</option>
+            <option>Hefdak plaatsen</option>
+            <option>Hefbed monteren</option>
+            <option>Ramen uitzagen en plaatsen</option>
+            <option>Draaiplateau monteren</option>
+            <option>Handrem verlagen</option>
+            <option>Luifel monteren</option>
+            <option>Zonnepanelen plaatsen</option>
+            <option>Combinatie / meerdere werkzaamheden</option>
+            <option>Maatwerk / advies</option>
+          </select>
+        </div>
+        <span class="chip-label">Jouw busmodel</span>
+        <div class="chips">
+          <button class="chip" type="button" onclick="selChip(this,'VW Transporter')">VW Transporter</button>
+          <button class="chip" type="button" onclick="selChip(this,'Ford Transit Custom')">Ford Transit Custom</button>
+          <button class="chip" type="button" onclick="selChip(this,'Mercedes Vito')">Mercedes Vito</button>
+          <button class="chip" type="button" onclick="selChip(this,'Peugeot Expert')">Peugeot Expert</button>
+          <button class="chip" type="button" onclick="selChip(this,'Citroën Jumpy')">Citroën Jumpy</button>
+          <button class="chip" type="button" onclick="selChip(this,'Toyota ProAce')">Toyota ProAce</button>
+          <button class="chip" type="button" onclick="selChip(this,'Opel Vivaro')">Opel Vivaro</button>
+          <button class="chip" type="button" onclick="selChip(this,'Anders')">Anders</button>
+        </div>
+        <div class="field">
+          <label>Toelichting (optioneel)</label>
+          <textarea id="f-msg" placeholder="Bouwjaar, uitvoering, bijzondere wensen..."></textarea>
+        </div>
+        <div class="consent">
+          <input type="checkbox" id="akk">
+          <label for="akk">Ik ga akkoord met verwerking van mijn gegevens voor deze aanvraag.</label>
+        </div>
+        <button class="btn-wa full" id="wa-prefill" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+          Verstuur via WhatsApp
+        </button>
+        <p class="form-note">Opent WhatsApp met jouw gegevens al ingevuld.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="logo-hm-camperbouw.webp" alt="HM Camperbouw" class="nav-logo-img" width="100" height="65" decoding="async" loading="lazy">
+      </div>
+      <div class="footer-links">
+        <a href="https://wa.me/31634569329" target="_blank" rel="noopener">+31 6 34 56 93 29</a>
+        <a href="#werkzaamheden">Diensten</a>
+        <a href="#offerte">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>KVK: 94757089</span>
+      <span>HM Camperbouw &mdash; Hefdaken, ramen, draaiplateaus en maatwerk</span>
+      <span>&copy; 2025</span>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING WA (desktop) -->
+<a class="wa-float" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20stuur%20een%20foto%20van%20mijn%20bus." target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+</a>
+
+<!-- MOBILE STICKY CTA -->
+<div class="mobile-cta">
+  <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20stuur%20een%20foto%20van%20mijn%20bus." target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+    Stuur je busfoto
+  </a>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+var FRAME_COUNT   = 99;
+var FRAME_BASE    = 'frames/frame_';
+var FRAME_EXT     = '.webp';
+// Unlock scroll when this many frames are buffered (≈ first 30% of the sequence)
+var UNLOCK_AT     = 30;
+
+/* ============================================================
+   ELEMENT REFS
+   ============================================================ */
+var loadScreen  = document.getElementById('load-screen');
+var lsBar       = document.getElementById('ls-bar');
+var lsPct       = document.getElementById('ls-pct');
+var section     = document.getElementById('animation-section');
+var stickyEl    = document.getElementById('canvas-sticky');
+var canvas      = document.getElementById('anim-canvas');
+var poster      = document.getElementById('anim-poster');
+var loaderEl    = document.getElementById('anim-loader');
+var loaderFill  = document.getElementById('loader-fill');
+var heroText    = document.getElementById('hero-text');
+var scrollHint  = document.getElementById('scroll-hint');
+var nav         = document.getElementById('main-nav');
+
+/* ============================================================
+   EARLY EXITS
+   ============================================================ */
+// Skip animation on mobile — static hero handles it
+var isMobile = window.matchMedia('(max-width: 768px)').matches;
+if (isMobile) {
+  // Still dismiss the load screen immediately on mobile
+  if (loadScreen) loadScreen.classList.add('dismissed');
+  setupReveal();
+  setupNav();
+  return;
+}
+
+// Skip for reduced motion preference
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (loadScreen) loadScreen.classList.add('dismissed');
+  setupReveal();
+  setupNav();
+  return;
+}
+
+if (!canvas || !section) {
+  if (loadScreen) loadScreen.classList.add('dismissed');
+  return;
+}
+
+/* ============================================================
+   CANVAS SETUP
+   ============================================================ */
+var ctx = canvas.getContext('2d', { alpha: false, colorSpace: 'srgb' });
+// Cap DPR at 2 — beyond that benefit is imperceptible, cost is high
+var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+var images      = new Array(FRAME_COUNT);
+var loadedCount = 0;
+var ready       = false;   // true when ALL frames loaded
+var unlocked    = false;   // true when UNLOCK_AT frames loaded
+var currentIdx  = -1;
+var ticking     = false;
+
+/* ============================================================
+   CANVAS SIZING — pixel-perfect on Retina/4K
+   ============================================================ */
+function resizeCanvas() {
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+  canvas.width  = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
+  canvas.style.width  = w + 'px';
+  canvas.style.height = h + 'px';
+  if (currentIdx >= 0) drawFrame(currentIdx, true);
+}
+
+/* ============================================================
+   DRAW — cover-fit with centered crop, no distortion
+   ============================================================ */
+function drawFrame(idx, force) {
+  var img = images[idx];
+  if (!img || !img.complete || img.naturalWidth === 0) return;
+  if (!force && idx === currentIdx) return;
+  currentIdx = idx;
+
+  var cw = canvas.width, ch = canvas.height;
+  var iw = img.naturalWidth, ih = img.naturalHeight;
+  var canvasR = cw / ch, imgR = iw / ih;
+  var sx, sy, sw, sh;
+
+  if (imgR > canvasR) {
+    sh = ih; sw = ih * canvasR;
+    sx = (iw - sw) / 2; sy = 0;
+  } else {
+    sw = iw; sh = iw / canvasR;
+    sx = 0; sy = (ih - sh) / 2;
+  }
+
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+}
+
+/* ============================================================
+   FRAME URL
+   ============================================================ */
+function frameUrl(i) {
+  return FRAME_BASE + String(i).padStart(3, '0') + FRAME_EXT;
+}
+
+/* ============================================================
+   PRELOAD — prioritized: frames 1→10 first, then rest
+   Keeps first-visible-frame latency minimal while
+   still loading the full sequence in the background.
+   ============================================================ */
+function preload() {
+  // Lock scroll during loading
+  document.body.style.overflow = 'hidden';
+
+  function loadFrame(idx) {
+    var img = new Image();
+    img.decoding = 'async';
+    img.onload = function () {
+      loadedCount++;
+      onFrameLoaded(idx);
+    };
+    img.onerror = function () {
+      loadedCount++;
+      onFrameLoaded(idx);
+    };
+    img.src = frameUrl(idx);
+    images[idx - 1] = img;
+  }
+
+  // Priority batch 1: frames 1–10 immediately
+  for (var i = 1; i <= 10; i++) loadFrame(i);
+
+  // Priority batch 2: frames 11–30 with slight delay so batch 1 gets network priority
+  setTimeout(function () {
+    for (var i = 11; i <= 30; i++) loadFrame(i);
+  }, 50);
+
+  // Remaining frames: load after unlock threshold is hit
+  setTimeout(function () {
+    for (var i = 31; i <= FRAME_COUNT; i++) loadFrame(i);
+  }, 200);
+}
+
+function onFrameLoaded(idx) {
+  var pct = Math.round((loadedCount / FRAME_COUNT) * 100);
+
+  // Update both load screens
+  if (lsBar)      lsBar.style.width  = pct + '%';
+  if (lsPct)      lsPct.textContent  = pct + '%';
+  if (loaderFill) loaderFill.style.width = pct + '%';
+
+  // Show canvas as soon as frame 1 is decoded
+  if (idx === 1) {
+    resizeCanvas();
+    drawFrame(0, true);
+    if (poster) poster.classList.add('hidden');
+  }
+
+  // Unlock scroll once UNLOCK_AT frames are ready
+  if (!unlocked && loadedCount >= UNLOCK_AT) {
+    unlocked = true;
+    onUnlocked();
+  }
+
+  // Final: all frames loaded
+  if (loadedCount === FRAME_COUNT) {
+    onAllLoaded();
+  }
+}
+
+function onUnlocked() {
+  // Dismiss fullscreen load screen
+  if (loadScreen) loadScreen.classList.add('dismissed');
+  // Restore scroll
+  document.body.style.overflow = '';
+  // Show scroll hint
+  if (scrollHint) scrollHint.classList.add('visible');
+  // Start responding to scroll
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+function onAllLoaded() {
+  ready = true;
+  if (loaderEl) loaderEl.classList.add('hidden');
+}
+
+/* ============================================================
+   SCROLL → FRAME
+   ============================================================ */
+function onScroll() {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(update);
+}
+
+function update() {
+  ticking = false;
+
+  var rect  = section.getBoundingClientRect();
+  var total = section.offsetHeight - window.innerHeight;
+  if (total <= 0) return;
+  if (rect.top > window.innerHeight || rect.bottom < 0) return;
+
+  var scrolled = -rect.top;
+  var frac     = Math.max(0, Math.min(1, scrolled / total));
+
+  // Only draw frames that have actually loaded
+  var targetIdx = Math.round(frac * (FRAME_COUNT - 1));
+  var safeIdx   = Math.min(targetIdx, loadedCount - 1);
+  if (safeIdx >= 0) drawFrame(safeIdx);
+
+  // Hero text fades after 20% progress
+  if (heroText) heroText.classList.toggle('fading', frac > 0.2);
+
+  // Hide scroll hint on first real scroll movement
+  if (frac > 0.02 && scrollHint) scrollHint.classList.remove('visible');
+}
+
+/* ============================================================
+   NAV SCROLL EFFECT
+   ============================================================ */
+function setupNav() {
+  if (!nav) return;
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+}
+
+/* ============================================================
+   REVEAL-ON-SCROLL
+   ============================================================ */
+function setupReveal() {
+  var reveals = document.querySelectorAll('.reveal');
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(function (el) { obs.observe(el); });
+}
+
+/* ============================================================
+   RESIZE
+   ============================================================ */
+var resizeTimer;
+window.addEventListener('resize', function () {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(resizeCanvas, 150);
+}, { passive: true });
+
+if (typeof ResizeObserver !== 'undefined') {
+  new ResizeObserver(resizeCanvas).observe(stickyEl);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+setupNav();
+setupReveal();
+resizeCanvas();
+preload();
+
+})();
+
+/* ============================================================
+   FORM: WhatsApp prefill + validatie
+   ============================================================ */
+var selModel = '';
+
+function selChip(el, m) {
+  document.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('sel'); });
+  el.classList.add('sel');
+  selModel = m;
+  updateWA();
+}
+
+function updateWA() {
+  var naam   = (document.getElementById('f-naam')   || {}).value || '';
+  var tel    = (document.getElementById('f-tel')    || {}).value || '';
+  var dienst = (document.getElementById('f-dienst') || {}).value || '';
+  var msg    = (document.getElementById('f-msg')    || {}).value || '';
+
+  var txt = 'Hallo%2C%20ik%20wil%20een%20offerte%20aanvragen.';
+  if (naam.trim())   txt += '%0ANaam%3A%20'          + encodeURIComponent(naam.trim());
+  if (tel.trim())    txt += '%0ATelefoon%3A%20'       + encodeURIComponent(tel.trim());
+  if (selModel)      txt += '%0ABusmodel%3A%20'       + encodeURIComponent(selModel);
+  if (dienst)        txt += '%0AWerkzaamheden%3A%20'  + encodeURIComponent(dienst);
+  if (msg.trim())    txt += '%0AToelichting%3A%20'    + encodeURIComponent(msg.trim());
+
+  var btn = document.getElementById('wa-prefill');
+  if (btn) btn.setAttribute('data-wa-text', txt);
+}
+
+// Validatie vóór WhatsApp openen
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('wa-prefill');
+  if (!btn) return;
+
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    var naam   = (document.getElementById('f-naam')   || {}).value || '';
+    var tel    = (document.getElementById('f-tel')    || {}).value || '';
+    var akk    = document.getElementById('akk');
+    var errors = [];
+
+    if (!naam.trim())    errors.push('Vul je voornaam in.');
+    if (!tel.trim())     errors.push('Vul je telefoonnummer in.');
+    if (!selModel)       errors.push('Selecteer je busmodel.');
+    if (akk && !akk.checked) errors.push('Vink de privacyverklaring aan.');
+
+    if (errors.length > 0) {
+      // Toon foutmelding inline
+      var existing = document.getElementById('form-errors');
+      if (existing) existing.remove();
+      var box = document.createElement('div');
+      box.id = 'form-errors';
+      box.style.cssText = 'background:rgba(232,36,28,0.08);border:1px solid rgba(232,36,28,0.3);border-radius:3px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#F2EDE6;line-height:1.7';
+      box.innerHTML = errors.join('<br>');
+      btn.parentNode.insertBefore(box, btn);
+      btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Verwijder eventuele foutmelding
+    var existing = document.getElementById('form-errors');
+    if (existing) existing.remove();
+
+    // Open WhatsApp
+    var txt = btn.getAttribute('data-wa-text') || 'Hallo%2C%20ik%20wil%20een%20offerte%20aanvragen.';
+    window.open('https://wa.me/31634569329?text=' + txt, '_blank', 'noopener');
+  });
+});
+
+['f-naam', 'f-tel', 'f-dienst', 'f-msg'].forEach(function (id) {
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateWA);
+});
+</script>
+</body>
+</html>
