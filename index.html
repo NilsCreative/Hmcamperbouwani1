@@ -1084,6 +1084,229 @@ footer {
   }
   .mobile-hero-content h1 em { font-style: italic; color: var(--gold); }
 }
+/* ============================================================
+   HEFDAKEN SECTIE
+   ============================================================ */
+#hefdaken { background: var(--ink); padding-bottom: 0; }
+
+.hfd-hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/7;
+  overflow: hidden;
+  margin-top: 48px;
+}
+@media (max-width: 768px) { .hfd-hero { aspect-ratio: 4/3; } }
+.hfd-hero img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+.hfd-hero-caption {
+  position: absolute;
+  bottom: 24px; left: 40px;
+  background: rgba(10,10,10,0.72);
+  backdrop-filter: blur(8px);
+  padding: 12px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--red);
+}
+.hfd-hero-caption .label { margin-bottom: 4px; display: block; }
+.hfd-hero-caption p { font-size: 13px; color: var(--cream-dim); margin: 0; }
+@media (max-width: 768px) { .hfd-hero-caption { left: 20px; bottom: 16px; } }
+
+.hfd-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  padding: 72px 0 64px;
+  align-items: start;
+}
+@media (max-width: 900px) { .hfd-intro { grid-template-columns: 1fr; gap: 40px; } }
+.hfd-intro-text h3 {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 3vw, 44px);
+  color: var(--cream);
+  margin-bottom: 20px;
+  line-height: 1.08;
+}
+.hfd-intro-text p {
+  font-size: 15px;
+  color: var(--cream-dim);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+.hfd-intro-text p strong { color: var(--cream); }
+
+.hfd-types {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hfd-type {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--ink-2);
+  transition: background 0.2s;
+}
+.hfd-type:last-child { border-bottom: none; }
+.hfd-type:hover { background: var(--ink-3); }
+.hfd-type .label { margin-bottom: 8px; display: block; }
+.hfd-type h4 {
+  font-family: var(--f-display);
+  font-size: 18px;
+  color: var(--cream);
+  margin-bottom: 6px;
+}
+.hfd-type p { font-size: 13px; color: var(--cream-dim); line-height: 1.6; margin: 0; }
+
+/* Before / During / After */
+.hfd-bda {
+  padding: 0 0 72px;
+  border-top: 1px solid var(--rule);
+  padding-top: 56px;
+}
+.hfd-bda-header { margin-bottom: 32px; }
+.hfd-bda-header .label { margin-bottom: 10px; display: block; }
+.hfd-bda-header h3 {
+  font-family: var(--f-display);
+  font-size: clamp(24px, 2.5vw, 36px);
+  color: var(--cream);
+  font-weight: 400;
+}
+.hfd-bda-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+@media (max-width: 640px) { .hfd-bda-grid { grid-template-columns: 1fr; } }
+.hfd-bda-item {
+  background: var(--ink);
+  position: relative;
+}
+.hfd-bda-img {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+.hfd-bda-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+.hfd-bda-item:hover .hfd-bda-img img { transform: scale(1.03); }
+.hfd-bda-label {
+  display: inline-block;
+  margin: 14px 16px 8px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+.hfd-bda-label.before { background: rgba(242,237,230,0.08); color: var(--cream-dim); }
+.hfd-bda-label.during { background: rgba(232,36,28,0.12); color: var(--red); }
+.hfd-bda-label.after  { background: rgba(37,211,102,0.12); color: #25D366; }
+.hfd-bda-item p {
+  font-size: 13px;
+  color: var(--cream-ghost);
+  line-height: 1.55;
+  padding: 0 16px 18px;
+  margin: 0;
+}
+
+/* Galerij */
+.hfd-gallery {
+  padding: 0 0 72px;
+  border-top: 1px solid var(--rule);
+  padding-top: 56px;
+}
+.hfd-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+@media (max-width: 640px) { .hfd-gallery-grid { grid-template-columns: 1fr; } }
+.hfd-gallery-item { position: relative; background: var(--ink); }
+.hfd-gallery-item img {
+  width: 100%;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+.hfd-gallery-item:hover img { transform: scale(1.03); }
+.hfd-gallery-caption {
+  padding: 14px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hfd-gallery-caption strong {
+  font-size: 13px;
+  color: var(--cream);
+  font-family: var(--f-display);
+}
+.hfd-gallery-caption span { font-size: 12px; color: var(--cream-ghost); }
+
+/* CTA-rij hefdaken */
+.hfd-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 24px 28px;
+  margin-bottom: 80px;
+}
+.hfd-cta p { font-size: 14px; color: var(--cream-dim); max-width: 480px; margin: 0; }
+
+/* Overige diensten — compact */
+#werkzaamheden { background: var(--ink-2); }
+.diensten-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1px;
+}
+@media (max-width: 640px) { .diensten-row { grid-template-columns: 1fr; } }
+.dienst-item {
+  background: var(--ink-2);
+  padding: 28px 28px;
+  transition: background 0.2s;
+}
+.dienst-item:hover { background: var(--ink-3); }
+.dienst-item h3 {
+  font-family: var(--f-display);
+  font-size: 22px;
+  color: var(--cream);
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.dienst-item p { font-size: 13.5px; color: var(--cream-dim); line-height: 1.6; margin: 0; }
+
 </style>
 </head>
 <body>
@@ -1190,67 +1413,183 @@ footer {
 </section>
 
 <!-- ============================================================
-     WERKZAAMHEDEN
+     HEFDAKEN — SPECIALITEIT
+     ============================================================ -->
+<section id="hefdaken">
+  <div class="wrap">
+    <div class="section-header reveal">
+      <span class="section-index label">Specialiteit</span>
+      <h2 class="section-title">Hefdaken —<br>Himen's <em>vak</em></h2>
+    </div>
+    <hr class="rule">
+  </div>
+
+  <!-- Fullbreedte hero-foto -->
+  <div class="hfd-hero reveal">
+    <img src="photos/hero.webp" alt="Volkswagen Transporter met gemonteerd hefdak, open zijdeur en houten interieur — project van HM Camperbouw" loading="lazy" decoding="async">
+    <div class="hfd-hero-caption">
+      <span class="label">Eigen project &mdash; VW T6 Amigo</span>
+      <p>Hefdak, B-stijl verwijderd, houten interieur op maat</p>
+    </div>
+  </div>
+
+  <!-- Wat is een hefdak + types -->
+  <div class="wrap">
+    <div class="hfd-intro reveal">
+      <div class="hfd-intro-text">
+        <h3>Meer ruimte.<br>Zelfde bus.</h3>
+        <p>Een hefdak geeft je bus een volwaardige slaapverdieping zonder dat je een grotere bus nodig hebt. Overdag rijdt je gewoon; 's avonds hef je het dak en sta je rechtop. Himen monteert hefdaken van merken als <strong>Reimo</strong> en <strong>SCA</strong>, maar ook maatwerk-constructies — afhankelijk van jouw bus en wensen.</p>
+        <p>Elk project is anders. Welk tentdoek, welke kleur, met of zonder venster, met of zonder B-stijlverwijdering — dat bespreek je direct met Himen.</p>
+      </div>
+      <div class="hfd-types">
+        <div class="hfd-type">
+          <span class="label">Type 01</span>
+          <h4>Standaard hefdak</h4>
+          <p>Klapt omhoog en biedt een slaapplaats voor twee. Compact en bewezen.</p>
+        </div>
+        <div class="hfd-type">
+          <span class="label">Type 02</span>
+          <h4>Hefbed</h4>
+          <p>Bed dat omhoogklapt in de bus zelf. Geen tentdoek, maximaal afdak-gevoel.</p>
+        </div>
+        <div class="hfd-type">
+          <span class="label">Type 03</span>
+          <h4>Op maat</h4>
+          <p>Specifieke kleur tentdoek, afwijkend formaat of speciale afwerking? In overleg.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Before / During / After van een echt project -->
+    <div class="hfd-bda reveal">
+      <div class="hfd-bda-header">
+        <span class="label">Uit de werkplaats</span>
+        <h3>Zo gaat een hefdak-montage</h3>
+      </div>
+      <div class="hfd-bda-grid">
+        <div class="hfd-bda-item">
+          <div class="hfd-bda-img">
+            <img src="photos/before.webp" alt="VW Transporter zonder hefdak, lege laadruimte — startpunt van het project" loading="lazy" decoding="async">
+          </div>
+          <span class="hfd-bda-label before">Voor</span>
+          <p>Standaard bus, lege laadruimte. Exact zoals hij binnenkomt.</p>
+        </div>
+        <div class="hfd-bda-item">
+          <div class="hfd-bda-img">
+            <img src="photos/during.webp" alt="VW Transporter met dak in bewerking in de werkplaats van HM Camperbouw" loading="lazy" decoding="async">
+          </div>
+          <span class="hfd-bda-label during">Tijdens</span>
+          <p>Het dak wordt professioneel bewerkt in de eigen werkplaats.</p>
+        </div>
+        <div class="hfd-bda-item">
+          <div class="hfd-bda-img">
+            <img src="photos/after.webp" alt="VW Transporter met gemonteerd hefdak, klaar voor oplevering" loading="lazy" decoding="async">
+          </div>
+          <span class="hfd-bda-label after">Na</span>
+          <p>Hefdak gemonteerd, getest en klaar voor oplevering.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projectgalerij -->
+    <div class="hfd-gallery reveal">
+      <span class="label" style="margin-bottom:24px;display:block">Meer projecten</span>
+      <div class="hfd-gallery-grid">
+        <div class="hfd-gallery-item">
+          <img src="photos/gallery1.webp" alt="Gele en blauwe VW Transporter met hefdak — twee projecten van HM Camperbouw" loading="lazy" decoding="async">
+          <div class="hfd-gallery-caption">
+            <strong>VW T6 — meerdere uitvoeringen</strong>
+            <span>Hefdak, diverse tentdoek-kleuren</span>
+          </div>
+        </div>
+        <div class="hfd-gallery-item">
+          <img src="photos/gallery2.webp" alt="Lichtblauwe VW Transporter met turquoise hefdak in werkplaats" loading="lazy" decoding="async">
+          <div class="hfd-gallery-caption">
+            <strong>VW T6 — turquoise tentdoek</strong>
+            <span>Kleur tentdoek volledig op wens</span>
+          </div>
+        </div>
+        <div class="hfd-gallery-item">
+          <img src="photos/gallery3.webp" alt="Zwarte VW Transporter Amigo met open hefdak in de avond" loading="lazy" decoding="async">
+          <div class="hfd-gallery-caption">
+            <strong>VW T6 Amigo — zwart</strong>
+            <span>Hefdak + B-stijl verwijderd</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA direct na de galerie -->
+    <div class="hfd-cta reveal">
+      <div>
+        <p>Meer foto's van projecten volgen binnenkort. Heb je vragen over een specifiek type hefdak?</p>
+      </div>
+      <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20vraag%20over%20een%20hefdak%20voor%20mijn%20bus." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+        Vraag over hefdakken
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     OVER HIMEN — direct na zijn specialiteit
+     ============================================================ -->
+<section id="over">
+  <div class="wrap">
+    <div class="over-grid">
+      <div class="over-text reveal">
+        <span class="label">De vakman</span>
+        <h2>HM Camperbouw<br>is <em>Himen</em></h2>
+        <p>HM Camperbouw is de werkplaats van Himen. Geen groot bedrijf, geen tussenpersonen — gewoon directe communicatie met de persoon die het werk ook echt uitvoert.</p>
+        <p>Je stuurt een foto, vertelt wat je wilt en krijgt eerlijk advies over wat er mogelijk is en wat het kost. Zo simpel is het.</p>
+        <div class="over-badges">
+          <span class="over-badge">Eigen werkplaats</span>
+          <span class="over-badge">Persoonlijk advies</span>
+          <span class="over-badge">Direct contact</span>
+          <span class="over-badge">RDW-proof</span>
+        </div>
+        <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20vraag%20over%20mijn%20bus." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
+          Direct WhatsAppen
+        </a>
+      </div>
+      <div class="over-photo reveal" style="transition-delay:.12s">
+        <span style="line-height:1.7">Foto van Himen<br>of de werkplaats<br>— volgt</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     OVERIGE DIENSTEN — compact
      ============================================================ -->
 <section id="werkzaamheden">
   <div class="wrap">
     <div class="section-header reveal">
-      <span class="section-index label">Diensten</span>
-      <h2 class="section-title">Wat wij<br><em>bouwen</em></h2>
+      <span class="section-index label">Meer mogelijk</span>
+      <h2 class="section-title">Ook uit<br>te <em>voeren</em></h2>
     </div>
     <hr class="rule">
-
-    <div class="werk-grid">
-      <div class="werk-card reveal">
-        <span class="werk-num">01</span>
-        <h3>Hefdaken</h3>
-        <p>Meer hoogte, meer slaapruimte. Een hefdak of hefbed geeft je bus een volwaardige verblijfsdimensie.</p>
-        <div class="werk-tags">
-          <span class="werk-tag">Hefdak plaatsen</span>
-          <span class="werk-tag">Hefbed monteren</span>
-          <span class="werk-tag">Open Sky tentdoek</span>
-          <span class="werk-tag">B-stijl verwijderen</span>
-        </div>
-      </div>
-      <div class="werk-card reveal" style="transition-delay:.06s">
-        <span class="werk-num">02</span>
+    <div class="diensten-row reveal">
+      <div class="dienst-item">
         <h3>Ramen</h3>
-        <p>Licht, uitzicht en privacy. Privacyglas, schuiframen en horren maken je bus bruikbaar en comfortabel.</p>
-        <div class="werk-tags">
-          <span class="werk-tag">Ramen uitzagen</span>
-          <span class="werk-tag">Privacyglas</span>
-          <span class="werk-tag">Schuiframen</span>
-          <span class="werk-tag">Horren</span>
-        </div>
+        <p>Uitzagen, privacyglas, schuiframen en horren.</p>
       </div>
-      <div class="werk-card reveal" style="transition-delay:.12s">
-        <span class="werk-num">03</span>
+      <div class="dienst-item">
         <h3>Draaiplateaus</h3>
-        <p>Slimmer gebruik van de cabine. Een draaiplateau maakt je voorstoelen onderdeel van de leefruimte.</p>
-        <div class="werk-tags">
-          <span class="werk-tag">Bestuurdersstoel</span>
-          <span class="werk-tag">Passagiersstoel</span>
-          <span class="werk-tag">Handrem verlagen</span>
-        </div>
+        <p>Bestuurder en passagier, inclusief handrem verlagen.</p>
       </div>
-      <div class="werk-card reveal" style="transition-delay:.18s">
-        <span class="werk-num">04</span>
-        <h3>Maatwerk &amp; afwerking</h3>
-        <p>Van vilt en gordijnen tot luifel en zonnepanelen — de camperbasis netjes afgewerkt.</p>
-        <div class="werk-tags">
-          <span class="werk-tag">Luifel</span>
-          <span class="werk-tag">Zonnepanelen</span>
-          <span class="werk-tag">Vilt &amp; gordijnen</span>
-          <span class="werk-tag">Maatoplossingen</span>
-        </div>
+      <div class="dienst-item">
+        <h3>Afwerking</h3>
+        <p>Vilt, gordijnen, luifel, zonnepanelen en maatwerk.</p>
       </div>
     </div>
-
     <div class="werk-cta-row reveal">
-      <p><strong>Andere wens?</strong> Stuur een foto en vertel wat je zoekt — we kijken samen wat er mogelijk is.</p>
+      <p><strong>Combinatie mogelijk.</strong> Meeste klanten kiezen hefdak + ramen + draaiplateau in één opdracht.</p>
       <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20vraag%20over%20mijn%20bus." target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
-        Vraag stellen via WhatsApp
+        Stel je vraag
       </a>
     </div>
   </div>
@@ -1285,63 +1624,6 @@ footer {
         <span class="step-num">04</span>
         <h3>Ombouw in onze werkplaats</h3>
         <p>Alles wordt vakkundig uitgevoerd in de eigen werkplaats van HM Camperbouw.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     BUSMODELLEN
-     ============================================================ -->
-<section id="modellen">
-  <div class="wrap">
-    <div class="section-header reveal">
-      <span class="section-index label">Compatibiliteit</span>
-      <h2 class="section-title">Welke bus<br>heb <em>jij</em>?</h2>
-    </div>
-    <div class="models-grid reveal">
-      <button class="model-pill">Volkswagen<br>Transporter</button>
-      <button class="model-pill">Ford Transit<br>Custom</button>
-      <button class="model-pill">Mercedes<br>Vito</button>
-      <button class="model-pill">Peugeot<br>Expert</button>
-      <button class="model-pill">Citroën<br>Jumpy</button>
-      <button class="model-pill">Toyota<br>ProAce</button>
-      <button class="model-pill">Opel<br>Vivaro</button>
-      <button class="model-pill other">
-        <a href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20ander%20busmodel%2C%20namelijk%3A%20" target="_blank" rel="noopener" style="color:inherit">Anders →</a>
-      </button>
-    </div>
-    <div class="models-note reveal">
-      <p>Twijfel je? <a href="https://wa.me/31634569329?text=Hallo%2C%20ik%20stuur%20een%20foto%20van%20mijn%20bus." target="_blank" rel="noopener">Stuur gewoon een foto via WhatsApp.</a></p>
-      <a class="btn-ghost" href="#offerte">Offerte aanvragen</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     OVER HIMEN
-     ============================================================ -->
-<section id="over">
-  <div class="wrap">
-    <div class="over-grid">
-      <div class="over-text reveal">
-        <span class="label">De vakman</span>
-        <h2>HM Camperbouw<br>is <em>Himen</em></h2>
-        <p>HM Camperbouw is de werkplaats van Himen. Geen groot bedrijf, geen tussenpersonen — gewoon directe communicatie met de persoon die het werk ook echt uitvoert.</p>
-        <p>Je stuurt een foto, vertelt wat je wilt en krijgt eerlijk advies over wat er mogelijk is en wat het kost. Zo simpel is het.</p>
-        <div class="over-badges">
-          <span class="over-badge">Eigen werkplaats</span>
-          <span class="over-badge">Persoonlijk advies</span>
-          <span class="over-badge">Direct contact</span>
-          <span class="over-badge">RDW-proof</span>
-        </div>
-        <a class="btn-wa" href="https://wa.me/31634569329?text=Hallo%2C%20ik%20heb%20een%20vraag%20over%20mijn%20bus." target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.88.5 3.65 1.45 5.18L2 22l5.1-1.53a9.9 9.9 0 0 0 4.94 1.31h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.81 14.06c-.25.7-1.42 1.34-1.95 1.42-.5.08-1.12.11-1.81-.11-.42-.13-.95-.31-1.64-.6-2.88-1.24-4.75-4.14-4.9-4.34-.14-.2-1.18-1.57-1.18-2.99 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.18.01.41-.07.64.49.25.6.83 2.09.9 2.24.07.15.12.33.02.53-.1.2-.16.32-.31.49-.15.17-.31.38-.45.51-.15.14-.31.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.4 2.5 1.55.32.15.5.13.69-.07.19-.21.79-.91 1-1.22.21-.31.42-.26.7-.16.28.1 1.77.84 2.07.99.3.15.5.22.57.35.07.13.07.73-.18 1.43z"/></svg>
-          Direct WhatsAppen
-        </a>
-      </div>
-      <div class="over-photo reveal" style="transition-delay:.12s">
-        <span style="line-height:1.7">Foto van Himen<br>of de werkplaats<br>— volgt</span>
       </div>
     </div>
   </div>
