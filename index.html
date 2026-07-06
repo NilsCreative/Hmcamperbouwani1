@@ -275,7 +275,7 @@ nav.scrolled {
    ============================================================ */
 #animation-section {
   position: relative;
-  height: 550vh; /* controls scroll length = ~5-6s of scrolling at normal speed */
+  height: 440vh; /* scroll length — 4 tekst-beats verdeeld over de reis */
 }
 
 #canvas-sticky {
@@ -378,20 +378,34 @@ nav.scrolled {
 }
 
 /* Hero overlay text — fades out as animation progresses */
-#hero-text {
+#hero-beats {
   position: absolute;
   bottom: 14%;
   left: 40px;
+  right: 40px;
   z-index: 10;
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
 }
-@media (max-width: 768px) { #hero-text { left: 20px; bottom: 100px; } }
-#hero-text.fading {
+@media (max-width: 768px) { #hero-beats { left: 20px; right: 20px; bottom: 100px; } }
+.hero-beat {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(24px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  will-change: opacity, transform;
 }
-#hero-text .label { margin-bottom: 14px; display: block; }
-#hero-text h1 {
+.hero-beat.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hero-beat.past {
+  opacity: 0;
+  transform: translateY(-24px);
+}
+.hero-beat .label { margin-bottom: 14px; display: block; }
+.hero-beat h1 {
   font-family: var(--f-display);
   font-size: clamp(42px, 6.5vw, 96px);
   line-height: 1.0;
@@ -399,7 +413,7 @@ nav.scrolled {
   text-shadow: 0 2px 40px rgba(0,0,0,0.5);
   max-width: 760px;
 }
-#hero-text h1 em {
+.hero-beat h1 em {
   font-style: italic;
   color: var(--gold);
 }
@@ -1499,10 +1513,24 @@ footer {
     <!-- Canvas: JS draws frames here -->
     <canvas id="anim-canvas" aria-hidden="true"></canvas>
 
-    <!-- Hero text overlay -->
-    <div id="hero-text">
-      <span class="label">HM Camperbouw — Vakkundige camperombouw</span>
-      <h1>Jouw bus.<br><em>Vakkundig</em><br>omgebouwd.</h1>
+    <!-- Scroll-synced tekst beats -->
+    <div id="hero-beats">
+      <div class="hero-beat" data-beat="0">
+        <span class="label">HM Camperbouw</span>
+        <h1>Jouw bus.<br><em>Vakkundig</em><br>omgebouwd.</h1>
+      </div>
+      <div class="hero-beat" data-beat="1">
+        <span class="label">Specialiteit</span>
+        <h1>Hefdaken.<br><em>Ons vak.</em></h1>
+      </div>
+      <div class="hero-beat" data-beat="2">
+        <span class="label">Compleet</span>
+        <h1>Ramen, draaiplateaus<br>en <em>maatwerk.</em></h1>
+      </div>
+      <div class="hero-beat" data-beat="3">
+        <span class="label">Eigen werkplaats</span>
+        <h1>Klaar voor<br>de <em>weg.</em></h1>
+      </div>
     </div>
 
     <!-- Loader bar -->
@@ -1919,7 +1947,6 @@ var canvas      = document.getElementById('anim-canvas');
 var poster      = document.getElementById('anim-poster');
 var loaderEl    = document.getElementById('anim-loader');
 var loaderFill  = document.getElementById('loader-fill');
-var heroText    = document.getElementById('hero-text');
 var scrollHint  = document.getElementById('scroll-hint');
 var nav         = document.getElementById('main-nav');
 
@@ -2115,11 +2142,49 @@ function update() {
   var safeIdx   = Math.min(targetIdx, loadedCount - 1);
   if (safeIdx >= 0) drawFrame(safeIdx);
 
-  // Hero text fades after 20% progress
-  if (heroText) heroText.classList.toggle('fading', frac > 0.2);
+  // Update scroll-synced tekst beats
+  updateBeats(frac);
 
   // Hide scroll hint on first real scroll movement
   if (frac > 0.02 && scrollHint) scrollHint.classList.remove('visible');
+}
+
+/* ============================================================
+   SCROLL-SYNCED TEXT BEATS
+   Verdeelt de 4 beats over de scroll. Elke beat heeft een
+   'venster' waarin hij actief is; ervoor = wachtend, erna = past.
+   ============================================================ */
+var beatEls = [];
+var currentBeat = -1;
+
+function initBeats() {
+  beatEls = Array.prototype.slice.call(document.querySelectorAll('.hero-beat'));
+}
+
+function updateBeats(frac) {
+  if (!beatEls.length) return;
+  var n = beatEls.length;
+
+  // Beat-vensters: eerste beat langer zichtbaar (opener), rest verdeeld.
+  // Grenzen waarop we naar de volgende beat wisselen.
+  var thresholds = [0.28, 0.52, 0.76]; // 4 beats => 3 overgangen
+  var active = 0;
+  for (var i = 0; i < thresholds.length; i++) {
+    if (frac >= thresholds[i]) active = i + 1;
+  }
+
+  if (active === currentBeat) return;
+  currentBeat = active;
+
+  for (var b = 0; b < n; b++) {
+    beatEls[b].classList.remove('active', 'past');
+    if (b === active) {
+      beatEls[b].classList.add('active');
+    } else if (b < active) {
+      beatEls[b].classList.add('past');
+    }
+    // b > active blijft in wachtstand (opacity 0, +24px)
+  }
 }
 
 /* ============================================================
@@ -2163,6 +2228,7 @@ if (typeof ResizeObserver !== 'undefined') {
    ============================================================ */
 setupNav();
 setupReveal();
+initBeats();
 resizeCanvas();
 preload();
 
